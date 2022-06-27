@@ -9,12 +9,8 @@ import socket
 # サーバーIPとポート番号
 IPADDR = "127.0.0.1"
 PORT = 50007
-
-# AF_INET：IPv4形式でソケット作成(省略可)
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-# IPアドレスとポート番号でバインド、タプルで指定
 s.bind((IPADDR, PORT))
-# サーバー有効化
 
 n_samples = 5001
 i = 0
