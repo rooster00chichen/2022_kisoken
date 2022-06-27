@@ -1,13 +1,17 @@
 from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 import pyqtgraph as pg
-import serial
+import socket
 
 # pyqtgraphとpyqt6を用インストール、numpyも念の為
 
 
-# シリアル
-ser = serial.Serial("COM3", 9600, 8, timeout=1*10**-3)
+# サーバーIPとポート番号
+IPADDR = "127.0.0.1"
+PORT = 50007
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.settimeout(10*10**-3)
+s.bind((IPADDR, PORT))
 
 n_samples = 5001
 i = 0
@@ -25,9 +29,9 @@ def update():
     global curve, p6, i
 
     try:
-        msg = ser.read(1024).decode()
-    except:
-        msg = "1"
+        msg = s.recv(1024).decode()
+    except socket.timeout:
+        msg = '1'
 
     i = i % n_samples
     num_list[i] = msg
@@ -43,7 +47,6 @@ timer.start(10)
 
 def main():
     pg.exec()
-    ser.close()
 
 
 if __name__ == "__main__":
