@@ -10,6 +10,7 @@ import socket
 IPADDR = "127.0.0.1"
 PORT = 50007
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.settimeout(10*10**-3)
 s.bind((IPADDR, PORT))
 
 n_samples = 5001
@@ -26,7 +27,12 @@ curve = p6.plot(pen='y')
 
 def update():
     global curve, p6, i
-    msg = s.recv(1024).decode()
+
+    try:
+        msg = s.recv(1024).decode()
+    except socket.timeout:
+        msg = '1'
+
     i = i % n_samples
     num_list[i] = msg
     pos = i + 1 if i < n_samples else 0
