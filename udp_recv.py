@@ -23,6 +23,8 @@ win.setWindowTitle('pyqtgraph example: Plotting')
 pg.setConfigOptions(antialias=True)
 p6 = win.addPlot(title="Updating plot")
 curve = p6.plot(pen='y')
+p6.setMouseEnabled(x=False, y=False)
+p6.setYRange(0.6, 1.5)
 
 
 def update():
