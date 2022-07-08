@@ -3,6 +3,8 @@ import time
 
 VENDOR_ID = 0x057e
 L_PRODUCT_ID = 0x2006
+R_PRODUCT_ID = 0x2007
+RL_PRODUCT_ID = 0x200e
 toInputStatus = False
 
 
@@ -16,13 +18,14 @@ def write_output_report(joycon_device, packet_number, command, subcommand, argum
 
 def main():
     joycon_device = hid.device()
-    joycon_device.open(VENDOR_ID, L_PRODUCT_ID)
+    joycon_device.open(VENDOR_ID, R_PRODUCT_ID)
 
     write_output_report(joycon_device, 0, b'\x01', b'\x03', b'\x33')
 
     while 1:
         joy_button_status = joycon_device.read(12)
-        print(joy_button_status[5])
+        print(joy_button_status[3])
+        time.sleep(100*10**-3)
 
 
 if __name__ == "__main__":
