@@ -64,6 +64,8 @@ def main():
                 if judge == "R":
                     print("now can operate")
                     break
+                else:
+                    print("but")
                 sleep(1*10*10**-3)
 
 
