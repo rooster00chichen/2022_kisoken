@@ -30,13 +30,25 @@ def main():
     joycon_device = hid.device()
     joycon_device.open(VENDOR_ID, L_PRODUCT_ID)
     write_output_report(joycon_device, 0, b'\x01', b'\x03', b'\x33')
+    move_val = 2000
+    print("now move_val:"+str(move_val))
 
     while 1:
         joy_button_status = joycon_device.read(12)
         if joy_button_status[5] == 8:
-            move_pottion = "M:1+P1000"
+            move_pottion = "M:1+P"+str(move_val)
         elif joy_button_status[5] == 4:
-            move_pottion = "M:1-P1000"
+            move_pottion = "M:1-P"+str(move_val)
+        elif joy_button_status[5] == 64:
+            if move_val != 2000:
+                move_val = 2000
+                print("now move_val:"+str(move_val))
+            move_pottion = ""
+        elif joy_button_status[5] == 128:
+            if move_val != 6000:
+                print(move_val)
+                print("now move_val:"+str(move_val))
+            move_pottion = ""
         else:
             move_pottion = ""
 
@@ -50,8 +62,9 @@ def main():
                 stage.write("!:")
                 judge = stage.read()
                 if judge == "R":
+                    print("now can operate")
                     break
-                sleep()
+                sleep(1*10*10**-3)
 
 
 if __name__ == "__main__":
