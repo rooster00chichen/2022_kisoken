@@ -16,7 +16,11 @@ def write_output_report(joycon_device, packet_number, command, subcommand, argum
 
 
 def move_signal_submit(move_val):
-    stage.write("M:1+P"+str(move_val))
+    if move_val >= 0:
+        sig = "M:1+P"+str(abs(move_val))
+    elif move_val <= 0:
+        sig = "M:1-P"+str(abs(move_val))
+    stage.write(sig)
     print("send the request" if stage.read() == "OK" else "test1")
     stage.write("G:")
     print("start move" if stage.read() == "OK" else "test2")
@@ -36,7 +40,7 @@ def main():
     while 1:
         joy_button_status = joycon_device.read(12)
         if joy_button_status[5] == 8:
-            changeOfPosition += move_signal_submit(move_val*1)
+            changeOfPosition += move_signal_submit(move_val)
             print("now posittion:"+str(changeOfPosition))
         elif joy_button_status[5] == 4:
             changeOfPosition += move_signal_submit(move_val*-1)
@@ -49,15 +53,15 @@ def main():
             if move_val != 6000:
                 move_val = 6000
                 print("now move distance:"+str(move_val))
-        elif joy_button_status[5] == 1:
+        elif joy_button_status[5] == 2:
             if changeOfPosition != 0:
-                changeOfPosition += move_signal_submit(changeOfPosition)
-            else:
-                continue
+                changeOfPosition += move_signal_submit(changeOfPosition*-1)
+                print(changeOfPosition)
             if changeOfPosition != 0:
                 print("error")
         else:
             pass
+        sleep(100*10**-3)
 
 
 if __name__ == "__main__":
@@ -82,8 +86,9 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        a = move_signal_submit(changeOfPosition)
-        print(a)
+        if changeOfPosition != 0:
+            changeOfPosition += move_signal_submit(changeOfPosition*-1)
+            print(changeOfPosition)
         # GPIB切断
         stage.close()
         # 終了
